@@ -1,24 +1,266 @@
 <!DOCTYPE html>
-<html lang="zh-Hant-TW">
+<html lang="zh-Hant">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>待辦事項｜一頁式管理工具</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>待辦事項管理</title>
 <style>
-:root{--bg:#f4f7fb;--card:#fff;--text:#16243a;--muted:#6a778b;--line:#e2e8f0;--brand:#315ddc;--light:#ebf1ff;--red:#a51d36;--yellow:#855b00;--green:#137c55;--shadow:0 6px 24px #1d3a6310}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,'Microsoft JhengHei',sans-serif}button,input,select,textarea{font:inherit}button{cursor:pointer}button:disabled{opacity:.45;cursor:not-allowed}.shell{max-width:1180px;margin:auto;padding:30px 22px 55px}header{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:23px}h1{margin:0;font-size:29px;letter-spacing:.03em}h2{margin:0;font-size:18px}header p,.sub{color:var(--muted);font-size:13px;margin:7px 0 0}.actions,.inline,.toolbar,.tabs{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.btn{border:1px solid var(--line);background:#fff;color:var(--text);padding:10px 13px;border-radius:10px;font-weight:650}.btn:hover{border-color:#a9bce9;background:#f8faff}.btn.primary{background:var(--brand);color:white;border-color:var(--brand)}.btn.ghost{border-color:transparent;background:transparent}.btn.danger{color:var(--red)}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:13px;margin-bottom:16px}.stat,.panel{background:var(--card);border:1px solid var(--line);box-shadow:var(--shadow);border-radius:15px}.stat{padding:17px 18px}.stat span{color:var(--muted);font-size:13px}.stat strong{display:block;font-size:27px;margin-top:5px}.grid{display:grid;grid-template-columns:1fr 320px;gap:16px;align-items:start}.panel{padding:19px;margin-bottom:16px}.panel-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:15px}.formgrid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:10px}.field{display:flex;flex-direction:column;gap:6px;min-width:0}.field label{font-size:12px;font-weight:700;color:#516074}.field input,.field select,.field textarea,.toolbar select,.toolbar input{min-width:0;width:100%;border:1px solid #d6dfeb;border-radius:9px;background:white;padding:10px 11px;outline:none;color:var(--text)}.field input:focus,.field textarea:focus,.field select:focus,.toolbar input:focus{border-color:var(--brand);box-shadow:0 0 0 3px #315ddc18}.field textarea{resize:vertical}.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}.form-actions{display:flex;justify-content:flex-end;margin-top:12px}.toolbar{justify-content:space-between;margin:5px 0 15px}.toolbar input{width:210px}.toolbar select{width:auto;max-width:170px}.tabs{border-bottom:1px solid var(--line);gap:4px;margin-bottom:16px}.tab{padding:10px 15px;border:0;background:transparent;color:var(--muted);border-bottom:3px solid transparent;font-weight:700}.tab.active{color:var(--brand);border-bottom-color:var(--brand)}.task{border:1px solid var(--line);border-radius:12px;padding:13px 12px;margin-bottom:10px;display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:start;background:#fff}.task:hover{border-color:#b8c9ef}.task.done{opacity:.68}.task.done .task-name{text-decoration:line-through}.task input[type=checkbox]{width:18px;height:18px;margin-top:4px;accent-color:var(--brand)}.task-name{font-weight:750;overflow-wrap:anywhere}.meta{display:flex;flex-wrap:wrap;gap:7px;margin:8px 0 0;color:var(--muted);font-size:12px}.tag{border-radius:6px;padding:3px 7px;background:#eef2f7;color:#516074;font-size:12px}.tag.high{background:#ffe2e7;color:var(--red)}.tag.mid{background:#fff0bf;color:var(--yellow)}.tag.low{background:#e4f5eb;color:var(--green)}.small{font-size:12px;color:var(--muted);margin:6px 0 0;overflow-wrap:anywhere}.task-buttons{display:flex;gap:3px}.iconbtn{border:0;background:transparent;border-radius:7px;padding:6px 7px;color:#64748b}.iconbtn:hover{background:#edf2fa;color:#244cba}.empty{text-align:center;color:var(--muted);padding:32px 8px;font-size:14px;border:1px dashed var(--line);border-radius:10px}.focusbox{background:#f8faff;border:1px dashed #b5c7f5;min-height:130px;border-radius:11px;padding:10px}.focusentry{display:flex;justify-content:space-between;align-items:center;background:#fff;border:1px solid #dbe5fb;border-radius:9px;padding:10px;margin-bottom:7px;gap:8px;font-size:13px}.focusentry b{overflow-wrap:anywhere}.focusentry.done b{text-decoration:line-through;opacity:.55}.focusentry button{border:0;background:transparent;cursor:pointer;color:var(--red)}.hint{color:var(--muted);font-size:12px;line-height:1.65}.progress{background:#e7edf8;border-radius:99px;height:9px;overflow:hidden;margin-top:9px}.progress div{height:100%;background:var(--brand);transition:width .2s}.count{font-size:12px;color:var(--muted)}.focus-select{display:flex;gap:8px;align-items:center}.focus-select select{border:1px solid var(--line);border-radius:8px;padding:5px}.file{display:none}dialog{border:0;border-radius:17px;padding:0;width:min(570px,calc(100vw - 32px));box-shadow:0 25px 100px #081a3355;color:var(--text)}dialog::backdrop{background:#11203f77}.dialogbody{padding:22px}.dialogactions{display:flex;justify-content:flex-end;gap:8px;margin-top:19px}.dialoggrid{display:grid;grid-template-columns:1fr 1fr;gap:11px}.span2{grid-column:span 2}.footer{text-align:center;font-size:12px;color:var(--muted);padding-top:6px}.toast{position:fixed;right:20px;bottom:20px;background:#172b4b;color:#fff;padding:12px 18px;border-radius:10px;box-shadow:var(--shadow);display:none;z-index:30}.focus-add{width:100%;margin-top:9px}input[type=date]{color-scheme:light}@media(max-width:950px){.grid{grid-template-columns:1fr}.formgrid{grid-template-columns:1fr 1fr}.stats{grid-template-columns:repeat(2,1fr)}}@media(max-width:600px){.shell{padding:19px 12px}h1{font-size:24px}.stat{padding:12px}.stat strong{font-size:24px}.formgrid,.dialoggrid{grid-template-columns:1fr}.span2{grid-column:auto}.row2{grid-template-columns:1fr}.toolbar input{width:100%}.toolbar select{flex:1}.task{gap:7px}.task-buttons{flex-direction:column}.panel{padding:14px}}
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #20263a; --muted: #7b8297;
+    --primary: #6558d3; --primary-light: #eeecff; --border: #e7e9f2;
+    --danger: #d84b5b; --success: #218a67;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; min-height: 100vh; padding: 40px 18px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", sans-serif;
+    background: radial-gradient(circle at top left, #e9e7ff 0, transparent 34%), var(--bg);
+    color: var(--text);
+  }
+  .app { width: min(900px, 100%); margin: 0 auto; }
+  .header { display:flex; align-items:center; justify-content:space-between; gap:16px; margin-bottom:26px; }
+  .eyebrow { color:var(--primary); font-weight:700; font-size:13px; letter-spacing:1.5px; }
+  h1 { margin:7px 0 6px; font-size:clamp(28px, 5vw, 38px); letter-spacing:-1px; }
+  .subtitle { margin:0; color:var(--muted); }
+  .date-pill { background:#fff; border:1px solid var(--border); padding:10px 14px; border-radius:14px; color:var(--muted); font-size:13px; white-space:nowrap; }
+  .stats { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-bottom:20px; }
+  .stat { background:var(--card); padding:18px 20px; border:1px solid var(--border); border-radius:18px; box-shadow:0 8px 24px #252b4d08; }
+  .stat-label { color:var(--muted); font-size:13px; }
+  .stat-number { font-size:29px; font-weight:750; margin-top:5px; }
+  .stat-number.purple { color:var(--primary); } .stat-number.green { color:var(--success); }
+  .panel { background:var(--card); border:1px solid var(--border); border-radius:22px; padding:24px; box-shadow:0 12px 35px #252b4d0a; }
+  .form-title { margin:0 0 15px; font-size:17px; }
+  .add-form { display:grid; grid-template-columns:minmax(0,1fr) 145px 145px auto; gap:10px; }
+  input, select, button { font:inherit; }
+  input, select { min-width:0; border:1px solid var(--border); background:#fff; padding:12px 13px; border-radius:11px; color:var(--text); outline:none; }
+  input:focus, select:focus { border-color:var(--primary); box-shadow:0 0 0 3px #6558d31c; }
+  button { border:0; border-radius:11px; cursor:pointer; font-weight:650; transition:transform .12s, opacity .12s; }
+  button:active { transform:scale(.98); }
+  .add-btn { padding:0 19px; background:var(--primary); color:#fff; }
+  .toolbar { display:flex; justify-content:space-between; align-items:center; gap:14px; margin:25px 0 14px; }
+  .toolbar h2 { margin:0; font-size:19px; }
+  .filters { display:flex; flex-wrap:wrap; gap:7px; }
+  .filter { background:transparent; color:var(--muted); padding:8px 12px; border:1px solid transparent; font-size:13px; }
+  .filter.active { color:var(--primary); background:var(--primary-light); border-color:#dfdcff; }
+  .task-list { display:grid; gap:10px; }
+  .task { display:flex; align-items:center; gap:13px; padding:15px 16px; border:1px solid var(--border); border-radius:15px; background:#fff; }
+  .check { width:21px; height:21px; accent-color:var(--primary); cursor:pointer; flex-shrink:0; }
+  .task-main { min-width:0; flex:1; }
+  .task-title { font-weight:650; overflow-wrap:anywhere; }
+  .task.completed .task-title { text-decoration:line-through; color:#9da2b1; }
+  .task-meta { display:flex; flex-wrap:wrap; gap:7px; margin-top:6px; color:var(--muted); font-size:12px; }
+  .tag { padding:3px 8px; border-radius:7px; background:#f1f2f7; }
+  .priority-high { color:#b63d4a; background:#fff0f1; }
+  .priority-medium { color:#a16a13; background:#fff6e4; }
+  .priority-low { color:#28775d; background:#eaf8f1; }
+  .task-actions { display:flex; gap:7px; }
+  .icon-btn { padding:8px 10px; background:#f5f6fa; color:#656d82; font-size:13px; }
+  .icon-btn.delete { color:var(--danger); background:#fff1f2; }
+  .empty { padding:42px 16px; text-align:center; color:var(--muted); border:1px dashed #d9dcea; border-radius:15px; }
+  .empty-icon { font-size:32px; margin-bottom:8px; }
+  .footer { text-align:center; color:#9aa0b0; font-size:12px; margin:20px 0 0; }
+  @media (max-width:700px) {
+    body { padding:24px 12px; }
+    .header { align-items:flex-start; } .date-pill { display:none; }
+    .stats { gap:8px; } .stat { padding:14px 12px; } .stat-number { font-size:24px; }
+    .panel { padding:17px; }
+    .add-form { grid-template-columns:1fr 1fr; }
+    .add-form input:first-child { grid-column:1 / -1; }
+    .add-btn { min-height:44px; }
+    .toolbar { align-items:flex-start; flex-direction:column; }
+    .task { padding:13px 11px; gap:9px; }
+    .task-actions { flex-direction:column; }
+  }
 </style>
 </head>
-<body><div class="shell">
-<header><div><h1>待辦事項</h1><p>把任務整理清楚，聚焦今天最重要的事。</p></div><div class="actions"><button class="btn" id="importBtn">匯入 CSV</button><button class="btn" id="exportBtn">匯出 CSV</button><button class="btn" id="sampleBtn">載入示範</button><input class="file" id="fileInput" type="file" accept=".csv,text/csv"></div></header>
-<section class="stats"><div class="stat"><span>全部任務</span><strong id="countAll">0</strong></div><div class="stat"><span>未完成</span><strong id="countPending">0</strong></div><div class="stat"><span>今日到期／已逾期</span><strong id="countDue">0</strong></div><div class="stat"><span>完成率</span><strong id="countRate">0%</strong><div class="progress"><div id="bar"></div></div></div></section>
-<div class="grid"><main>
-<section class="panel"><div class="panel-head"><h2>＋ 新增任務</h2></div><form id="newTask"><div class="formgrid"><div class="field"><label for="taskName">任務名稱 *</label><input id="taskName" required maxlength="120" placeholder="例如：完成專案週報"></div><div class="field"><label for="taskPriority">優先順序</label><select id="taskPriority"><option>高</option><option selected>中</option><option>低</option></select></div><div class="field"><label for="taskCategory">所屬分類</label><input id="taskCategory" maxlength="50" placeholder="例如：工作"></div><div class="field"><label for="taskDue">截止日期</label><input id="taskDue" type="date" required></div></div><div class="row2"><div class="field"><label for="taskDescription">描述（選填）</label><input id="taskDescription" maxlength="300" placeholder="簡述要完成的內容"></div><div class="field"><label for="taskNote">備註（選填）</label><input id="taskNote" maxlength="300" placeholder="補充資訊"></div></div><div class="form-actions"><button class="btn primary" type="submit">新增任務</button></div></form></section>
-<section class="panel"><div class="panel-head"><h2>任務清單</h2><span id="visibleCount" class="count"></span></div><div class="tabs" role="tablist" aria-label="任務狀態篩選"><button class="tab active" data-tab="pending">未完成</button><button class="tab" data-tab="done">已完成</button><button class="tab" data-tab="all">全部</button></div><div class="toolbar"><input id="search" type="search" placeholder="搜尋名稱、描述、分類…" aria-label="搜尋任務"><div class="inline"><select id="priorityFilter" aria-label="篩選優先順序"><option value="all">所有優先順序</option><option>高</option><option>中</option><option>低</option></select><select id="sortBy" aria-label="排序方式"><option value="priority">優先順序</option><option value="due">截止日期</option><option value="createdDesc">建立日（新→舊）</option><option value="createdAsc">建立日（舊→新）</option></select></div></div><div id="taskList"></div></section></main>
-<aside><section class="panel"><div class="panel-head"><h2>🎯 今日聚焦</h2><div class="focus-select"><label class="count" for="focusLimit">數量</label><select id="focusLimit"><option>3</option><option>4</option><option>5</option></select></div></div><p class="hint">由待辦清單使用「☆ 聚焦」加入，或將任務拖曳到下方。</p><div id="focusBox" class="focusbox" aria-label="拖曳任務至此"></div><button class="btn focus-add" id="autoFocus">自動選入高優先任務</button><p id="focusStatus" class="hint"></p></section><section class="panel"><h2>使用說明</h2><p class="hint">• 點選核取方塊即可完成任務；已完成的任務可再改回未開始。<br>• 點選「編輯」可調整狀態、截止日與其他資料。<br>• 所有資料自動儲存於本機瀏覽器（LocalStorage），不會上傳伺服器。<br>• CSV 使用繁體中文欄名，適合 Excel 開啟。清除瀏覽器資料可能造成任務遺失，建議定期匯出備份。</p></section></aside></div>
-<p class="footer">單檔 HTML · 免安裝 · 可離線使用 · 資料留在目前瀏覽器</p></div>
-<dialog id="editDialog"><form class="dialogbody" id="editForm"><div class="panel-head"><h2>編輯任務</h2><button class="btn ghost" type="button" id="closeEdit">✕</button></div><div class="dialoggrid"><div class="field span2"><label for="editName">任務名稱 *</label><input id="editName" required maxlength="120"></div><div class="field"><label for="editPriority">優先順序</label><select id="editPriority"><option>高</option><option>中</option><option>低</option></select></div><div class="field"><label for="editStatus">狀態</label><select id="editStatus"><option>未開始</option><option>進行中</option><option>已完成</option></select></div><div class="field"><label for="editDue">截止日期</label><input id="editDue" type="date" required></div><div class="field"><label for="editCategory">所屬分類</label><input id="editCategory" maxlength="50"></div><div class="field span2"><label for="editDescription">描述</label><textarea id="editDescription" rows="2" maxlength="300"></textarea></div><div class="field span2"><label for="editNote">備註</label><textarea id="editNote" rows="2" maxlength="300"></textarea></div></div><div class="dialogactions"><button class="btn" type="button" id="cancelEdit">取消</button><button class="btn primary" type="submit">儲存修改</button></div></form></dialog><div class="toast" id="toast" role="status" aria-live="polite"></div>
+<body>
+<main class="app">
+  <header class="header">
+    <div>
+      <div class="eyebrow">MY DAILY PLANNER</div>
+      <h1>待辦事項</h1>
+      <p class="subtitle">把每件小事完成，讓今天更有方向。</p>
+    </div>
+    <div class="date-pill" id="today"></div>
+  </header>
+
+  <section class="stats" aria-label="任務統計">
+    <div class="stat"><div class="stat-label">全部任務</div><div class="stat-number" id="totalCount">0</div></div>
+    <div class="stat"><div class="stat-label">尚未完成</div><div class="stat-number purple" id="pendingCount">0</div></div>
+    <div class="stat"><div class="stat-label">已完成</div><div class="stat-number green" id="doneCount">0</div></div>
+  </section>
+
+  <section class="panel">
+    <h2 class="form-title">＋ 新增任務</h2>
+    <form class="add-form" id="taskForm">
+      <input id="taskInput" type="text" maxlength="120" placeholder="例如：完成專案企劃書…" aria-label="任務名稱" required>
+      <input id="dueDate" type="date" aria-label="截止日期">
+      <select id="priority" aria-label="任務優先順序">
+        <option value="medium">中優先</option>
+        <option value="high">高優先</option>
+        <option value="low">低優先</option>
+      </select>
+      <button class="add-btn" type="submit">新增任務</button>
+    </form>
+
+    <div class="toolbar">
+      <h2>我的清單 <span id="listCount" style="color:var(--muted);font-size:13px;font-weight:500"></span></h2>
+      <div class="filters" role="group" aria-label="篩選任務">
+        <button class="filter active" data-filter="all">全部</button>
+        <button class="filter" data-filter="pending">未完成</button>
+        <button class="filter" data-filter="completed">已完成</button>
+      </div>
+    </div>
+    <div class="task-list" id="taskList"></div>
+  </section>
+  <p class="footer">資料會自動儲存在這個瀏覽器中 · 無需登入</p>
+</main>
+
 <script>
-(()=>{'use strict';const KEY='taiwan_todo_single_v1';const $=id=>document.getElementById(id);let state={tasks:[],focus:[],limit:3},tab='pending',editId=null,toastTimer;const today=()=>{let d=new Date();return [d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-')};const addDays=n=>{let d=new Date();d.setDate(d.getDate()+n);return [d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-')};const datetime=()=>{const d=new Date();return `${today()} ${[d.getHours(),d.getMinutes(),d.getSeconds()].map(x=>String(x).padStart(2,'0')).join(':')}`};const id=()=>globalThis.crypto&&crypto.randomUUID?crypto.randomUUID():Date.now().toString(36)+Math.random().toString(36).slice(2);const escapeHtml=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));const dateDisplay=d=>d?String(d).replace(/-/g,'/'):'—';const isDone=t=>t.status==='已完成';const priorityRank={高:0,中:1,低:2};function notify(s){$('toast').textContent=s;$('toast').style.display='block';clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('toast').style.display='none',2600)}function save(){try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){notify('瀏覽器儲存失敗，請匯出 CSV 備份')}}function load(){try{const data=JSON.parse(localStorage.getItem(KEY));if(data&&Array.isArray(data.tasks)){state.tasks=data.tasks.filter(t=>t&&t.id&&t.name).map(t=>({...t,status:['未開始','進行中','已完成'].includes(t.status)?t.status:'未開始'}));state.focus=Array.isArray(data.focus)?data.focus:[];state.limit=[3,4,5].includes(+data.limit)?+data.limit:3}}catch(e){notify('儲存資料格式異常')}}$('focusLimit').value=state.limit}function render(){state.focus=state.focus.filter(k=>state.tasks.some(t=>t.id===k));$('countAll').textContent=state.tasks.length;const pending=state.tasks.filter(t=>!isDone(t));$('countPending').textContent=pending.length;$('countDue').textContent=pending.filter(t=>t.due&&t.due<=today()).length;const rate=state.tasks.length?Math.round((state.tasks.length-pending.length)/state.tasks.length*100):0;$('countRate').textContent=rate+'%';$('bar').style.width=rate+'%';document.querySelectorAll('.tab').forEach(b=>{b.classList.toggle('active',b.dataset.tab===tab);b.setAttribute('aria-selected',String(b.dataset.tab===tab))});const q=$('search').value.trim().toLowerCase(),pf=$('priorityFilter').value,sort=$('sortBy').value;let list=state.tasks.filter(t=>(tab==='all'||(tab==='done'?isDone(t):!isDone(t)))&&(pf==='all'||t.priority===pf)&&[t.name,t.description,t.category,t.note].some(v=>String(v||'').toLowerCase().includes(q)));list.sort((a,b)=>sort==='priority'?(priorityRank[a.priority]??3)-(priorityRank[b.priority]??3)||(a.due||'9999').localeCompare(b.due||'9999'):sort==='due'?(a.due||'9999').localeCompare(b.due||'9999')||(priorityRank[a.priority]??3)-(priorityRank[b.priority]??3):sort==='createdAsc'?(a.createdAt||'').localeCompare(b.createdAt||''):(b.createdAt||'').localeCompare(a.createdAt||''));$('visibleCount').textContent=`顯示 ${list.length} 筆`;$('taskList').innerHTML=list.length?list.map(t=>`<article class="task ${isDone(t)?'done':''}" draggable="${!isDone(t)}" data-id="${escapeHtml(t.id)}"><input type="checkbox" aria-label="完成 ${escapeHtml(t.name)}" data-action="toggle" data-id="${escapeHtml(t.id)}" ${isDone(t)?'checked':''}><div><div class="task-name">${escapeHtml(t.name)}</div>${t.description?`<div class="small">${escapeHtml(t.description)}</div>`:''}<div class="meta"><span class="tag ${t.priority==='高'?'high':t.priority==='中'?'mid':'low'}">${escapeHtml(t.priority)}優先</span><span class="tag">${escapeHtml(t.status)}</span><span>截止 ${dateDisplay(t.due)}</span>${t.due&&t.due<today()&&!isDone(t)?'<span class="tag high">已逾期</span>':''}${t.category?`<span class="tag">${escapeHtml(t.category)}</span>`:''}</div></div><div class="task-buttons"><button class="iconbtn" title="${state.focus.includes(t.id)?'移除聚焦':'加入聚焦'}" aria-label="聚焦" data-action="focus" data-id="${escapeHtml(t.id)}">${state.focus.includes(t.id)?'★':'☆'}</button><button class="iconbtn" title="編輯" data-action="edit" data-id="${escapeHtml(t.id)}">編輯</button><button class="iconbtn" title="刪除" data-action="delete" data-id="${escapeHtml(t.id)}">刪除</button></div></article>`).join(''):'<div class="empty">目前沒有符合條件的任務</div>';let focusTasks=state.focus.map(k=>state.tasks.find(t=>t.id===k)).filter(Boolean);$('focusBox').innerHTML=focusTasks.length?focusTasks.map(t=>`<div class="focusentry ${isDone(t)?'done':''}"><b>${escapeHtml(t.name)}</b><button aria-label="移除聚焦 ${escapeHtml(t.name)}" data-action="unfocus" data-id="${escapeHtml(t.id)}">✕</button></div>`).join(''):'<div class="empty">將重要任務加入今日聚焦</div>';$('focusStatus').textContent=`已選 ${focusTasks.length} / ${state.limit} 件${focusTasks.some(isDone)?'（含已完成任務）':''}`;save()}
-function makeTask(v){return {id:id(),name:v.name.trim(),description:v.description||'',priority:v.priority||'中',status:v.status||'未開始',createdAt:v.createdAt||datetime(),due:v.due||addDays(1),completedAt:v.completedAt||'',category:v.category||'',note:v.note||''}}function toggle(t){t.status=isDone(t)?'未開始':'已完成';t.completedAt=isDone(t)?datetime():'';render()}function setFocus(k){const t=state.tasks.find(x=>x.id===k);if(!t)return;if(state.focus.includes(k)){state.focus=state.focus.filter(x=>x!==k)}else if(isDone(t))notify('已完成任務不加入今日聚焦');else if(state.focus.length>=state.limit)notify(`今日聚焦最多 ${state.limit} 件`);else state.focus.push(k);render()}
-$('newTask').addEventListener('submit',e=>{e.preventDefault();const name=$('taskName').value.trim();if(!name)return;state.tasks.unshift(makeTask({name,priority:$('taskPriority').value,category:$('taskCategory').value,description:$('taskDescription').value,note:$('taskNote').value,due:$('taskDue').value}));e.target.reset();$('taskDue').value=addDays(1);render();$('taskName').focus();notify('任務已新增')});$('taskList').addEventListener('click',e=>{const b=e.target.closest('button[data-action]');if(!b)return;const t=state.tasks.find(t=>t.id===b.dataset.id);if(!t)return;switch(b.dataset.action){case'focus':setFocus(t.id);break;case'edit':openEdit(t);break;case'delete':if(confirm(`確定刪除「${t.name}」？`)){state.tasks=state.tasks.filter(x=>x.id!==t.id);render();notify('任務已刪除')}break}});$('taskList').addEventListener('change',e=>{if(e.target.dataset.action==='toggle'){const t=state.tasks.find(x=>x.id===e.target.dataset.id);if(t)toggle(t)}});$('focusBox').addEventListener('click',e=>{const b=e.target.closest('button[data-action="unfocus"]');if(b)setFocus(b.dataset.id)});$('taskList').addEventListener('dragstart',e=>{const node=e.target.closest('.task');if(node&&e.dataTransfer){e.dataTransfer.setData('text/plain',node.dataset.id);e.dataTransfer.effectAllowed='copy'}});$('focusBox').addEventListener('dragover',e=>e.preventDefault());$('focusBox').addEventListener('drop',e=>{e.preventDefault();const k=e.dataTransfer.getData('text/plain');if(k&&!state.focus.includes(k))setFocus(k)});$('autoFocus').addEventListener('click',()=>{const next=state.tasks.filter(t=>!isDone(t)&&!state.focus.includes(t.id)).sort((a,b)=>(priorityRank[a.priority]??3)-(priorityRank[b.priority]??3)||(a.due||'9999').localeCompare(b.due||'9999'));for(const t of next){if(state.focus.length>=state.limit)break;state.focus.push(t.id)}render();notify('已選入待辦任務')});$('focusLimit').addEventListener('change',e=>{state.limit=+e.target.value;state.focus=state.focus.slice(0,state.limit);render()});document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>{tab=b.dataset.tab;render()}));['search','priorityFilter','sortBy'].forEach(k=>$(k).addEventListener(k==='search'?'input':'change',render));function openEdit(t){editId=t.id;for(const [el,key] of [['editName','name'],['editPriority','priority'],['editStatus','status'],['editDue','due'],['editCategory','category'],['editDescription','description'],['editNote','note']])$(el).value=t[key]||'';$('editDialog').showModal()}function closeEdit(){$('editDialog').close();editId=null}$('closeEdit').onclick=closeEdit;$('cancelEdit').onclick=closeEdit;$('editForm').addEventListener('submit',e=>{e.preventDefault();const t=state.tasks.find(t=>t.id===editId);if(!t)return;const wasDone=isDone(t);for(const [el,key] of [['editName','name'],['editPriority','priority'],['editStatus','status'],['editDue','due'],['editCategory','category'],['editDescription','description'],['editNote','note']])t[key]=$(el).value.trim();if(!t.name)return;if(isDone(t)&&!wasDone)t.completedAt=datetime();if(!isDone(t))t.completedAt='';closeEdit();render();notify('任務已更新')});
-const HEADERS=['任務名稱','描述','優先順序','狀態','建立日期','截止日期','完成時間','所屬分類','備註'];const quote=v=>'"'+String(v??'').replace(/"/g,'""')+'"';const slash=v=>String(v||'').replace(/-/g,'/');$('exportBtn').addEventListener('click',()=>{const rows=state.tasks.map(t=>[t.name,t.description,t.priority,t.status,slash((t.createdAt||'').slice(0,10)),slash(t.due),slash(t.completedAt),t.category,t.note]);const csv='\ufeff'+[HEADERS,...rows].map(r=>r.map(quote).join(',')).join('\r\n');const blob=new Blob([csv],{type:'text/csv;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=`待辦事項_${today().replace(/-/g,'')}.csv`;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);notify('CSV 已匯出')});$('importBtn').addEventListener('click',()=>$('fileInput').click());function parseCSV(s){s=s.replace(/^\ufeff/,'');const rows=[];let row=[],field='',inside=false;for(let i=0;i<s.length;i++){const c=s[i];if(inside){if(c==='"'&&s[i+1]==='"'){field+='"';i++}else if(c==='"')inside=false;else field+=c}else if(c==='"')inside=true;else if(c===','){row.push(field);field=''}else if(c==='\n'||c==='\r'){if(c==='\r'&&s[i+1]==='\n')i++;row.push(field);if(row.some(x=>x!==''))rows.push(row);row=[];field=''}else field+=c}if(inside)throw Error('CSV 引號未閉合');row.push(field);if(row.some(x=>x!==''))rows.push(row);return rows}function normDate(s){s=String(s||'').trim().replace(/\//g,'-');return /^\d{4}-\d{2}-\d{2}$/.test(s)?s:''}function normDatetime(s){s=String(s||'').trim().replace(/\//g,'-');return /^\d{4}-\d{2}-\d{2}( \d{2}:\d{2}:\d{2})?$/.test(s)?s:''}$('fileInput').addEventListener('change',async e=>{const file=e.target.files[0];if(!file)return;try{const rows=parseCSV(await file.text());if(!rows.length)throw Error('檔案為空');const heads=rows.shift().map(s=>s.trim().replace(/^\ufeff/,''));if(!['任務名稱','優先順序','狀態'].every(h=>heads.includes(h)))throw Error('CSV 必須包含「任務名稱、優先順序、狀態」欄位');const index=h=>heads.indexOf(h),val=(r,h)=>index(h)<0?'':r[index(h)]||'';const tasks=rows.filter(r=>val(r,'任務名稱').trim()).map(r=>{const p=val(r,'優先順序'),s=val(r,'狀態');return makeTask({name:val(r,'任務名稱'),description:val(r,'描述'),priority:['高','中','低'].includes(p)?p:'中',status:['未開始','進行中','已完成'].includes(s)?s:'未開始',createdAt:normDatetime(val(r,'建立日期'))||datetime(),due:normDate(val(r,'截止日期'))||addDays(1),completedAt:normDatetime(val(r,'完成時間')),category:val(r,'所屬分類'),note:val(r,'備註')})});if(!tasks.length)throw Error('沒有可匯入的任務');if(confirm(`讀取到 ${tasks.length} 筆任務。按「確定」追加到現有清單。`)){state.tasks.push(...tasks);render();notify(`已匯入 ${tasks.length} 筆`)}}catch(error){alert('匯入失敗：'+error.message)}finally{e.target.value=''}});$('sampleBtn').addEventListener('click',()=>{if(state.tasks.length&&!confirm('示範任務將追加至現有清單，是否繼續？'))return;const samples=[['完成專案週報','高','工作',0],['確認系統備份結果','高','資訊管理',1],['整理下週會議資料','中','工作',2],['閱讀技術新知','低','學習',5],['回覆工作聯絡信件','中','工作',1]];state.tasks.push(...samples.map(([name,priority,category,days])=>makeTask({name,priority,category,due:addDays(days)})));render();notify('已載入 5 筆示範任務')});$('taskDue').value=addDays(1);load();render();})();
-</script></body></html>
+(() => {
+  const STORAGE_KEY = 'single-page-todo-v1';
+  const priorityText = { high: '高優先', medium: '中優先', low: '低優先' };
+  const priorityClass = { high: 'priority-high', medium: 'priority-medium', low: 'priority-low' };
+  let tasks = [];
+  let currentFilter = 'all';
+
+  try { tasks = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); }
+  catch { tasks = []; }
+
+  const $ = (id) => document.getElementById(id);
+  $('today').textContent = new Intl.DateTimeFormat('zh-TW', {
+    year: 'numeric', month: 'long', day: 'numeric', weekday: 'long'
+  }).format(new Date());
+
+  function save() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
+    render();
+  }
+
+  function formatDueDate(date) {
+    if (!date) return '';
+    const d = new Date(date + 'T00:00:00');
+    return '截止：' + new Intl.DateTimeFormat('zh-TW', {
+      month: 'numeric', day: 'numeric'
+    }).format(d);
+  }
+
+  function render() {
+    const total = tasks.length;
+    const done = tasks.filter(t => t.completed).length;
+    $('totalCount').textContent = total;
+    $('pendingCount').textContent = total - done;
+    $('doneCount').textContent = done;
+
+    const visible = tasks.filter(t =>
+      currentFilter === 'all' ||
+      (currentFilter === 'pending' && !t.completed) ||
+      (currentFilter === 'completed' && t.completed)
+    );
+    $('listCount').textContent = `（${visible.length}）`;
+    const list = $('taskList');
+    list.replaceChildren();
+
+    if (!visible.length) {
+      const empty = document.createElement('div');
+      empty.className = 'empty';
+      empty.innerHTML = '<div class="empty-icon">📝</div><div>目前沒有符合條件的任務</div><div style="font-size:13px;margin-top:5px">新增一個任務，開始安排你的進度吧！</div>';
+      list.appendChild(empty);
+      return;
+    }
+
+    visible.forEach(task => {
+      const row = document.createElement('article');
+      row.className = 'task' + (task.completed ? ' completed' : '');
+
+      const checkbox = document.createElement('input');
+      checkbox.type = 'checkbox';
+      checkbox.className = 'check';
+      checkbox.checked = task.completed;
+      checkbox.setAttribute('aria-label', '標記完成');
+      checkbox.addEventListener('change', () => {
+        task.completed = checkbox.checked;
+        save();
+      });
+
+      const main = document.createElement('div');
+      main.className = 'task-main';
+      const title = document.createElement('div');
+      title.className = 'task-title';
+      title.textContent = task.title;
+
+      const meta = document.createElement('div');
+      meta.className = 'task-meta';
+      const priority = document.createElement('span');
+      priority.className = 'tag ' + priorityClass[task.priority];
+      priority.textContent = priorityText[task.priority];
+      meta.appendChild(priority);
+      if (task.dueDate) {
+        const due = document.createElement('span');
+        due.className = 'tag';
+        due.textContent = formatDueDate(task.dueDate);
+        meta.appendChild(due);
+      }
+      main.append(title, meta);
+
+      const actions = document.createElement('div');
+      actions.className = 'task-actions';
+      const edit = document.createElement('button');
+      edit.className = 'icon-btn';
+      edit.textContent = '編輯';
+      edit.addEventListener('click', () => {
+        const updated = prompt('修改任務名稱：', task.title);
+        if (updated === null) return;
+        const clean = updated.trim();
+        if (!clean) { alert('任務名稱不可為空白。'); return; }
+        task.title = clean;
+        save();
+      });
+
+      const remove = document.createElement('button');
+      remove.className = 'icon-btn delete';
+      remove.textContent = '刪除';
+      remove.addEventListener('click', () => {
+        if (confirm(`確定要刪除「${task.title}」嗎？`)) {
+          tasks = tasks.filter(t => t.id !== task.id);
+          save();
+        }
+      });
+      actions.append(edit, remove);
+      row.append(checkbox, main, actions);
+      list.appendChild(row);
+    });
+  }
+
+  $('taskForm').addEventListener('submit', (event) => {
+    event.preventDefault();
+    const title = $('taskInput').value.trim();
+    if (!title) return;
+    tasks.unshift({
+      id: (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : String(Date.now()),
+      title,
+      dueDate: $('dueDate').value,
+      priority: $('priority').value,
+      completed: false,
+      createdAt: new Date().toISOString()
+    });
+    $('taskInput').value = '';
+    $('dueDate').value = '';
+    $('priority').value = 'medium';
+    save();
+    $('taskInput').focus();
+  });
+
+  document.querySelectorAll('.filter').forEach(button => {
+    button.addEventListener('click', () => {
+      currentFilter = button.dataset.filter;
+      document.querySelectorAll('.filter').forEach(b => b.classList.toggle('active', b === button));
+      render();
+    });
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>

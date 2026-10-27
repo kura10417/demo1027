@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>SortableJS｜學習 JS 外掛</title><link rel="stylesheet" href="style.css"></head><body><main><a href="js.html">← 回到外掛總覽</a><p class="eyebrow">DEMO 09 / 拖曳排序</p><h1>SortableJS</h1><p class="intro">用滑鼠或手指調整順序。像待辦清單排優先順序、調整商品展示位置。</p><span class="tag">new Sortable()</span><section class="panel"><h2>動手試試</h2><p>把第三項拖到第一項；也可以按 Tab 移到 ↑ 按鈕，再按 Enter。</p><p id="error" class="error" role="alert" hidden></p><ul id="tasks" class="tasks"><li>讀懂範例 <button class="up" aria-label="讀懂範例往上移">↑</button></li><li>改一個設定 <button class="up" aria-label="改一個設定往上移">↑</button></li><li>做自己的作品 <button class="up" aria-label="做自己的作品往上移">↑</button></li></ul><p id="result" role="status">拖曳清單，或使用 ↑ 按鈕排序。重新整理會還原。</p></section><section class="panel"><h2>讀懂這個範例</h2><p>先用 HTML 放好畫面，再載入外掛的 CSS（若有）與 JavaScript，最後執行下面的初始化程式。把這個 HTML 檔複製一份，改設定練習。</p><h3>① 引入外掛</h3><pre><code>&lt;script src=&quot;https://cdn.jsdelivr.net/npm/sortablejs@1.15.6/Sortable.min.js&quot;&gt;&lt;/script&gt;</code></pre><h3>② 準備畫面</h3><pre><code>&lt;ul id=&quot;tasks&quot; class=&quot;tasks&quot;&gt;&lt;li&gt;讀懂範例 &lt;button class=&quot;up&quot; aria-label=&quot;讀懂範例往上移&quot;&gt;↑&lt;/button&gt;&lt;/li&gt;&lt;li&gt;改一個設定 &lt;button class=&quot;up&quot; aria-label=&quot;改一個設定往上移&quot;&gt;↑&lt;/button&gt;&lt;/li&gt;&lt;li&gt;做自己的作品 &lt;button class=&quot;up&quot; aria-label=&quot;做自己的作品往上移&quot;&gt;↑&lt;/button&gt;&lt;/li&gt;&lt;/ul&gt;&lt;p id=&quot;result&quot; role=&quot;status&quot;&gt;拖曳清單，或使用 ↑ 按鈕排序。重新整理會還原。&lt;/p&gt;</code></pre><h3>③ 啟動功能</h3><pre><code id="source">const list = document.querySelector('#tasks');
+function report(){ document.querySelector('#result').textContent = '目前順序：' + [...list.children].map(li =&gt; li.firstChild.textContent.trim()).join(' → '); }
+new Sortable(list,{animation:150,filter:'button',preventOnFilter:false,onEnd:report});
+// 另外提供按鈕，讓鍵盤使用者也可以排序。
+list.querySelectorAll('button').forEach(button =&gt; button.onclick = () =&gt; {
+  const li = button.parentElement;
+  if(li.previousElementSibling) list.insertBefore(li,li.previousElementSibling);
+  button.focus(); report();
+});</code></pre><a href="https://sortablejs.github.io/Sortable/" target="_blank" rel="noopener">閱讀 SortableJS 官方文件 ↗</a><p class="note">範例固定版本，方便重複練習；官方文件可能已更新。若改用新版，請對照該版本 API。資料僅在瀏覽器示範。</p></section><nav><a href="jsdemo08.html">← 上一個範例</a><a href="js.html">回總覽</a><a href="jsdemo10.html">下一個範例 →</a></nav><footer>學習 JS 外掛 · 需要網路載入 CDN</footer></main><script>
+function showError(message){const el=document.querySelector('#error');el.hidden=false;el.textContent=message;}
+window.addEventListener('error',event=>{if(event.target.tagName==='SCRIPT'||event.target.tagName==='LINK')showError('外掛資源載入失敗，請確認網路連線後重新整理。');else if(event.message)showError('執行遇到問題：'+event.message);},true);
+</script><script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.6/Sortable.min.js"></script><script>
+try {
+const list = document.querySelector('#tasks');
+function report(){ document.querySelector('#result').textContent = '目前順序：' + [...list.children].map(li => li.firstChild.textContent.trim()).join(' → '); }
+new Sortable(list,{animation:150,filter:'button',preventOnFilter:false,onEnd:report});
+// 另外提供按鈕，讓鍵盤使用者也可以排序。
+list.querySelectorAll('button').forEach(button => button.onclick = () => {
+  const li = button.parentElement;
+  if(li.previousElementSibling) list.insertBefore(li,li.previousElementSibling);
+  button.focus(); report();
+});
+} catch(error) { showError('範例無法啟動。請檢查網路與瀏覽器支援：'+error.message); }
+</script></body></html>

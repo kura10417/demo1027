@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Swiper｜學習 JS 外掛</title><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11.2.6/swiper-bundle.min.css"></head><body><main><a href="js.html">← 回到外掛總覽</a><p class="eyebrow">DEMO 07 / 輪播展示</p><h1>Swiper</h1><p class="intro">讓一組卡片可以左右切換。像商品介紹、活動照片，不需要自己寫拖曳邏輯。</p><span class="tag">new Swiper()</span><section class="panel"><h2>動手試試</h2><p>拖曳卡片或點左右箭頭，切換三張學習卡片。</p><p id="error" class="error" role="alert" hidden></p><div class="swiper"><div class="swiper-wrapper"><div class="swiper-slide">01 · 先認識 HTML</div><div class="swiper-slide">02 · 用 CSS 排版</div><div class="swiper-slide">03 · 用 JS 加上互動</div></div><div class="swiper-pagination"></div><div class="swiper-button-prev"></div><div class="swiper-button-next"></div></div></section><section class="panel"><h2>讀懂這個範例</h2><p>先用 HTML 放好畫面，再載入外掛的 CSS（若有）與 JavaScript，最後執行下面的初始化程式。把這個 HTML 檔複製一份，改設定練習。</p><h3>① 引入外掛</h3><pre><code>&lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdn.jsdelivr.net/npm/swiper@11.2.6/swiper-bundle.min.css&quot;&gt;
+&lt;script src=&quot;https://cdn.jsdelivr.net/npm/swiper@11.2.6/swiper-bundle.min.js&quot;&gt;&lt;/script&gt;</code></pre><h3>② 準備畫面</h3><pre><code>&lt;div class=&quot;swiper&quot;&gt;&lt;div class=&quot;swiper-wrapper&quot;&gt;&lt;div class=&quot;swiper-slide&quot;&gt;01 · 先認識 HTML&lt;/div&gt;&lt;div class=&quot;swiper-slide&quot;&gt;02 · 用 CSS 排版&lt;/div&gt;&lt;div class=&quot;swiper-slide&quot;&gt;03 · 用 JS 加上互動&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;swiper-pagination&quot;&gt;&lt;/div&gt;&lt;div class=&quot;swiper-button-prev&quot;&gt;&lt;/div&gt;&lt;div class=&quot;swiper-button-next&quot;&gt;&lt;/div&gt;&lt;/div&gt;</code></pre><h3>③ 啟動功能</h3><pre><code id="source">const swiper = new Swiper('.swiper', {
+  loop:true,
+  keyboard:{enabled:true},
+  pagination:{el:'.swiper-pagination',clickable:true},
+  navigation:{nextEl:'.swiper-button-next',prevEl:'.swiper-button-prev'}
+});</code></pre><a href="https://swiperjs.com/get-started" target="_blank" rel="noopener">閱讀 Swiper 官方文件 ↗</a><p class="note">範例固定版本，方便重複練習；官方文件可能已更新。若改用新版，請對照該版本 API。資料僅在瀏覽器示範。</p></section><nav><a href="jsdemo06.html">← 上一個範例</a><a href="js.html">回總覽</a><a href="jsdemo08.html">下一個範例 →</a></nav><footer>學習 JS 外掛 · 需要網路載入 CDN</footer></main><script>
+function showError(message){const el=document.querySelector('#error');el.hidden=false;el.textContent=message;}
+window.addEventListener('error',event=>{if(event.target.tagName==='SCRIPT'||event.target.tagName==='LINK')showError('外掛資源載入失敗，請確認網路連線後重新整理。');else if(event.message)showError('執行遇到問題：'+event.message);},true);
+</script><script src="https://cdn.jsdelivr.net/npm/swiper@11.2.6/swiper-bundle.min.js"></script><script>
+try {
+const swiper = new Swiper('.swiper', {
+  loop:true,
+  keyboard:{enabled:true},
+  pagination:{el:'.swiper-pagination',clickable:true},
+  navigation:{nextEl:'.swiper-button-next',prevEl:'.swiper-button-prev'}
+});
+} catch(error) { showError('範例無法啟動。請檢查網路與瀏覽器支援：'+error.message); }
+</script></body></html>

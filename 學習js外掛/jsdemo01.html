@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Flatpickr｜學習 JS 外掛</title><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.css"></head><body><main><a href="js.html">← 回到外掛總覽</a><p class="eyebrow">DEMO 01 / 表單輔助</p><h1>Flatpickr</h1><p class="intro">把普通輸入框變成日期選擇器。像訂餐、預約看診，不必讓使用者自己打日期。</p><span class="tag">flatpickr()</span><section class="panel"><h2>動手試試</h2><p>點輸入框，選一個日期；試著把 dateFormat 改成 Y/m/d。</p><p id="error" class="error" role="alert" hidden></p><label for="date">預約日期</label><input id="date" placeholder="點這裡選日期"><p id="result" role="status">請選擇今天或之後的日期。</p></section><section class="panel"><h2>讀懂這個範例</h2><p>先用 HTML 放好畫面，再載入外掛的 CSS（若有）與 JavaScript，最後執行下面的初始化程式。把這個 HTML 檔複製一份，改設定練習。</p><h3>① 引入外掛</h3><pre><code>&lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.css&quot;&gt;
+&lt;script src=&quot;https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.js&quot;&gt;&lt;/script&gt;</code></pre><h3>② 準備畫面</h3><pre><code>&lt;label for=&quot;date&quot;&gt;預約日期&lt;/label&gt;&lt;input id=&quot;date&quot; placeholder=&quot;點這裡選日期&quot;&gt;&lt;p id=&quot;result&quot; role=&quot;status&quot;&gt;請選擇今天或之後的日期。&lt;/p&gt;</code></pre><h3>③ 啟動功能</h3><pre><code id="source">// 找到輸入框，設定日期格式與最早日期。
+flatpickr('#date', {
+  dateFormat: 'Y-m-d', minDate: 'today', disableMobile: true,
+  onChange: (_, text) =&gt; { document.querySelector('#result').textContent = '你預約了：' + text; }
+});</code></pre><a href="https://flatpickr.js.org/" target="_blank" rel="noopener">閱讀 Flatpickr 官方文件 ↗</a><p class="note">範例固定版本，方便重複練習；官方文件可能已更新。若改用新版，請對照該版本 API。資料僅在瀏覽器示範。</p></section><nav><a href="js.html">回總覽</a><a href="jsdemo02.html">下一個範例 →</a></nav><footer>學習 JS 外掛 · 需要網路載入 CDN</footer></main><script>
+function showError(message){const el=document.querySelector('#error');el.hidden=false;el.textContent=message;}
+window.addEventListener('error',event=>{if(event.target.tagName==='SCRIPT'||event.target.tagName==='LINK')showError('外掛資源載入失敗，請確認網路連線後重新整理。');else if(event.message)showError('執行遇到問題：'+event.message);},true);
+</script><script src="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.js"></script><script>
+try {
+// 找到輸入框，設定日期格式與最早日期。
+flatpickr('#date', {
+  dateFormat: 'Y-m-d', minDate: 'today', disableMobile: true,
+  onChange: (_, text) => { document.querySelector('#result').textContent = '你預約了：' + text; }
+});
+} catch(error) { showError('範例無法啟動。請檢查網路與瀏覽器支援：'+error.message); }
+</script></body></html>

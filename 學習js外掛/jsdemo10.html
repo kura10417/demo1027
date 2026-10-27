@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Day.js｜學習 JS 外掛</title><link rel="stylesheet" href="style.css"></head><body><main><a href="js.html">← 回到外掛總覽</a><p class="eyebrow">DEMO 10 / 日期處理</p><h1>Day.js</h1><p class="intro">輕鬆計算日期並統一顯示格式。像今天起算 7 天後交作業，不必自己算跨月。</p><span class="tag">dayjs()、add()、format()</span><section class="panel"><h2>動手試試</h2><p>輸入 7 或 30 再計算；使用瀏覽器所在裝置的本地日期。</p><p id="error" class="error" role="alert" hidden></p><label for="days">幾天後交作業？</label><input id="days" type="number" min="0" max="365" step="1" value="7"><button id="calc">計算截止日</button><p id="result" role="status"></p></section><section class="panel"><h2>讀懂這個範例</h2><p>先用 HTML 放好畫面，再載入外掛的 CSS（若有）與 JavaScript，最後執行下面的初始化程式。把這個 HTML 檔複製一份，改設定練習。</p><h3>① 引入外掛</h3><pre><code>&lt;script src=&quot;https://cdn.jsdelivr.net/npm/dayjs@1.11.13/dayjs.min.js&quot;&gt;&lt;/script&gt;</code></pre><h3>② 準備畫面</h3><pre><code>&lt;label for=&quot;days&quot;&gt;幾天後交作業？&lt;/label&gt;&lt;input id=&quot;days&quot; type=&quot;number&quot; min=&quot;0&quot; max=&quot;365&quot; step=&quot;1&quot; value=&quot;7&quot;&gt;&lt;button id=&quot;calc&quot;&gt;計算截止日&lt;/button&gt;&lt;p id=&quot;result&quot; role=&quot;status&quot;&gt;&lt;/p&gt;</code></pre><h3>③ 啟動功能</h3><pre><code id="source">function calculate(){
+  const input = document.querySelector('#days');
+  if(!input.reportValidity() || input.value === '') return;
+  const days = Number(input.value);
+  document.querySelector('#result').textContent = '今天 ' + dayjs().format('YYYY/MM/DD') + '；截止日 ' + dayjs().add(days,'day').format('YYYY/MM/DD');
+}
+document.querySelector('#calc').onclick = calculate;
+calculate();</code></pre><a href="https://day.js.org/docs/en/installation/browser" target="_blank" rel="noopener">閱讀 Day.js 官方文件 ↗</a><p class="note">範例固定版本，方便重複練習；官方文件可能已更新。若改用新版，請對照該版本 API。資料僅在瀏覽器示範。</p></section><nav><a href="jsdemo09.html">← 上一個範例</a><a href="js.html">回總覽</a></nav><footer>學習 JS 外掛 · 需要網路載入 CDN</footer></main><script>
+function showError(message){const el=document.querySelector('#error');el.hidden=false;el.textContent=message;}
+window.addEventListener('error',event=>{if(event.target.tagName==='SCRIPT'||event.target.tagName==='LINK')showError('外掛資源載入失敗，請確認網路連線後重新整理。');else if(event.message)showError('執行遇到問題：'+event.message);},true);
+</script><script src="https://cdn.jsdelivr.net/npm/dayjs@1.11.13/dayjs.min.js"></script><script>
+try {
+function calculate(){
+  const input = document.querySelector('#days');
+  if(!input.reportValidity() || input.value === '') return;
+  const days = Number(input.value);
+  document.querySelector('#result').textContent = '今天 ' + dayjs().format('YYYY/MM/DD') + '；截止日 ' + dayjs().add(days,'day').format('YYYY/MM/DD');
+}
+document.querySelector('#calc').onclick = calculate;
+calculate();
+} catch(error) { showError('範例無法啟動。請檢查網路與瀏覽器支援：'+error.message); }
+</script></body></html>

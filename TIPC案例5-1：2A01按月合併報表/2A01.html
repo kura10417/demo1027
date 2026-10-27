@@ -1,120 +1,31 @@
 <!doctype html>
-<html lang="zh-Hant">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>TIPC 案例｜2A01 按月合併報表</title>
-  <!-- 讀取 xls/xlsx；JSZip 用來在 xlsx 樣板中只更新數值，保留原有格式與列印設定。 -->
-  <script src="https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.bundle.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
-  <style>
-    :root{--ink:#19324b;--muted:#64748b;--blue:#087ea4;--blue2:#e8f7fb;--line:#d8e1e8;--paper:#fff;--warn:#9a5600;--bad:#b42318}
-    *{box-sizing:border-box} body{margin:0;background:#f4f7f9;color:var(--ink);font-family:"Microsoft JhengHei",system-ui,sans-serif}
-    header{background:linear-gradient(120deg,#123b55,#087ea4);color:white;padding:36px max(24px,calc((100% - 1200px)/2));}
-    h1{font-size:clamp(24px,3vw,34px);margin:0 0 8px} header p{margin:0;opacity:.9} main{max-width:1200px;margin:28px auto 64px;padding:0 20px}
-    .notice{background:#fff8e8;border-left:4px solid #e5a43d;border-radius:7px;padding:13px 16px;line-height:1.65;margin-bottom:22px;color:#61420b}
-    .steps{display:flex;align-items:center;gap:8px;margin:0 0 20px}.step-chip{display:flex;align-items:center;gap:7px;color:var(--muted);font-size:14px;font-weight:700}.step-chip b{display:grid;place-items:center;width:25px;height:25px;border-radius:50%;background:#dce7eb;color:#52707c}.step-chip.active{color:var(--blue)}.step-chip.active b,.step-chip.done b{background:var(--blue);color:#fff}.step-line{height:2px;flex:1;max-width:90px;background:#dce7eb}.step-line.done{background:var(--blue)}
-    .grid{display:grid;grid-template-columns:1fr 1.45fr;gap:20px}.card{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:22px;box-shadow:0 3px 14px #17324b0a}.step-card{border-top:4px solid #dce7eb}.step-card.is-active{border-top-color:var(--blue)}.step-card.is-done{border-top-color:#2b9a70}
-    h2{font-size:18px;margin:0 0 8px}.step-no{display:inline-grid;place-items:center;width:25px;height:25px;margin-right:7px;border-radius:50%;background:#dce7eb;color:#48636e;font-size:13px;vertical-align:1px}.is-active .step-no{background:var(--blue);color:#fff}.is-done .step-no{background:#2b9a70;color:#fff}.help{font-size:14px;color:var(--muted);line-height:1.6;margin:0 0 16px}.drop{min-height:147px;border:2px dashed #9fc8d6;background:#f8fcfd;border-radius:10px;display:grid;place-items:center;text-align:center;padding:16px;cursor:pointer;transition:.15s}.drop:hover,.drop.over{border-color:var(--blue);background:var(--blue2)}.drop strong{display:block;font-size:16px;margin-bottom:6px}.drop span{font-size:13px;color:var(--muted)}input[type=file]{display:none}.files{margin:14px 0 0;padding:0;list-style:none}.files li{font-size:14px;padding:8px 10px;background:#f7fafc;border-radius:6px;margin-top:6px;display:flex;justify-content:space-between;gap:8px}.files button{border:0;background:transparent;color:var(--bad);cursor:pointer;font-size:15px}.clear{margin-top:12px;border:1px solid #d1dde2;background:#fff;border-radius:7px;padding:8px 12px;color:#315365;font:inherit;font-size:14px;cursor:pointer}.clear:hover{background:#f2f7f9}.clear:disabled{color:#9aaab1;background:#f7f9fa;cursor:not-allowed}
-    .bar{display:flex;gap:12px;align-items:center;margin:24px 0;flex-wrap:wrap}button.primary{background:var(--blue);border:0;border-radius:8px;padding:11px 19px;color:#fff;font:inherit;font-weight:700;cursor:pointer}button.primary:disabled{background:#a5b8c2;cursor:not-allowed}.status{font-size:14px;color:var(--muted)}.status.error{color:var(--bad)}.status.ok{color:#147a4f}
-    #result{display:none}.summary{display:flex;gap:12px;flex-wrap:wrap;margin:12px 0 20px}.pill{background:#eef7f4;color:#176d49;border-radius:30px;padding:6px 12px;font-size:13px}.pill.warn{background:#fff4e5;color:var(--warn)}.tableWrap{overflow:auto;border:1px solid var(--line);border-radius:10px;max-height:560px}table{border-collapse:collapse;width:max-content;min-width:100%;font-size:13px}th,td{padding:8px 10px;border-right:1px solid #e4e9ed;border-bottom:1px solid #e4e9ed;text-align:right;white-space:nowrap}th{position:sticky;top:0;background:#e8f4f7;color:#17405a;text-align:center;z-index:1}td:first-child,td:nth-child(2){text-align:left}tr:nth-child(even) td{background:#fbfdfe}.issue{margin-top:18px;border-radius:10px;padding:14px 16px;background:#fff4f2;border:1px solid #f4c5be;color:#7b241c;font-size:14px;line-height:1.6}.issue ul{margin:6px 0 0;padding-left:20px}.hidden{display:none!important}@media(max-width:760px){header{padding:28px 20px}main{padding:0 14px;margin-top:18px}.steps{gap:4px}.step-chip{font-size:12px;gap:4px}.step-chip b{width:23px;height:23px}.step-line{min-width:12px}.grid{grid-template-columns:1fr;gap:14px}.card{padding:17px}.drop{min-height:118px}.bar{align-items:stretch}.bar .primary{width:100%;font-size:16px;padding:14px}.status{width:100%;text-align:center}.tableWrap{max-height:420px}}
-  </style>
-</head>
-<body>
-<header><h1>TIPC 案例：2A01 按月合併報表</h1><p>以上傳的輸出樣板為唯一格式依據，彙整各月份的「裝卸噸數合計」。</p></header>
-<main>
-  <div class="notice">資料只會在這台電腦的瀏覽器中處理，不會上傳。<b>建議使用 .xlsx 輸出樣板</b>：此格式會直接在原檔內更新數字，因此可完整保留字型、背景、合併儲存格、欄寬與列印設定。`.xls` 樣板也可讀取，但下載時會轉為 `.xlsx`。</div>
-  <div class="steps" aria-label="使用步驟"><div class="step-chip active" id="chip1"><b>1</b><span>選樣板</span></div><i class="step-line" id="line1"></i><div class="step-chip" id="chip2"><b>2</b><span>加輸入檔</span></div><i class="step-line" id="line2"></i><div class="step-chip" id="chip3"><b>3</b><span>核對下載</span></div></div>
-  <section class="grid">
-    <div class="card step-card is-active" id="templateCard"><h2><span class="step-no">1</span>輸出樣板 Excel</h2><p class="help">先拖入一個含 1–12 月欄位與「貨物代碼」欄位的樣板。</p><label class="drop" id="templateDrop" for="templateInput"><div><strong>拖曳輸出樣板到這裡</strong><span>或點擊選取 .xls / .xlsx</span></div></label><input id="templateInput" type="file" accept=".xls,.xlsx"><ul class="files" id="templateList"></ul></div>
-    <div class="card step-card" id="inputCard"><h2><span class="step-no">2</span>輸入 Excel</h2><p class="help">再加入一或多個輸入檔。一個檔案內有多張月份工作表也可以；系統會讀取「貨物代碼」與「裝卸噸數合計」。</p><label class="drop" id="inputDrop" for="inputFiles"><div><strong>拖曳一或多個輸入檔到這裡</strong><span>或點擊選取 .xls / .xlsx（可多選）</span></div></label><input id="inputFiles" type="file" accept=".xls,.xlsx" multiple><ul class="files" id="inputList"></ul><button class="clear" id="clearInputs" type="button" disabled>清空全部輸入檔</button></div>
-  </section>
-  <div class="bar"><button class="primary" id="mergeBtn" disabled>產生合併預覽</button><span class="status" id="status">請先選取輸出樣板與至少一個輸入檔。</span></div>
-  <section class="card step-card" id="result"><h2><span class="step-no">3</span>合併預覽與下載</h2><p class="help">請先核對數字；確認後再下載。預覽只顯示樣板中辨識到的月份欄位與貨物代碼。</p><div class="summary" id="summary"></div><div class="tableWrap"><table id="preview"></table></div><div class="issue hidden" id="issues"></div><div class="bar"><button class="primary" id="downloadBtn">下載合併後報表</button><span class="status ok">已依上傳樣板建立下載檔。</span></div></section>
-</main>
+<html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>2A01 按月合併報表</title>
+<style>
+:root{font-family:"Microsoft JhengHei",system-ui,sans-serif;color:#18312d;background:#f3f6f4;font-size:15px}*{box-sizing:border-box}body{margin:0}header{background:#123d34;color:white;padding:32px max(24px,calc((100vw - 1280px)/2));border-bottom:5px solid #b5d6ae}header small{color:#b9d2c4;letter-spacing:2px}h1{margin:10px 0;font-size:30px;font-weight:600}header p{color:#d7e5de;margin:0;line-height:1.8}main{max-width:1328px;margin:auto;padding:28px 24px}h2{font-size:19px;margin:0 0 14px}h3{font-size:15px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}.panel{background:white;border:1px solid #dbe5de;border-radius:12px;padding:22px;margin-bottom:20px}.step{color:#5c816a;margin-right:8px;font-size:13px}.drop{display:block;border:2px dashed #a5bcae;background:#f8fbf8;border-radius:8px;padding:28px 15px;text-align:center;cursor:pointer;line-height:1.9}.drop:hover,.drop.drag{background:#e7f1e8;border-color:#376c4e}.drop input{display:block;margin:12px auto 0;max-width:100%}.hint{color:#64776d;font-size:13px;line-height:1.8}.filename{padding:10px 0;border-bottom:1px solid #edf0ed;overflow-wrap:anywhere}button,select,input{font:inherit}button{cursor:pointer;border:1px solid #b6c6bd;border-radius:6px;background:white;color:#244b3b;padding:10px 16px}button.primary{background:#215d46;color:white;border-color:#215d46}button:disabled{opacity:.4;cursor:not-allowed}select,input[type=number]{border:1px solid #bdcdc3;border-radius:4px;padding:7px;background:white}input[type=number]{width:85px}.toolbar{display:flex;gap:12px;align-items:center;flex-wrap:wrap}.sheetrow{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:12px 0;border-bottom:1px solid #edf0ed}.sheetrow label{flex:1;min-width:180px}.sheetrow small{color:#677e71}.sheetrow button{padding:4px 9px}.status{padding:14px;border-radius:7px;line-height:1.8;background:#eaf2ec;white-space:pre-wrap;margin:15px 0}.error{background:#fff0ec;color:#922f22}.warn{background:#fff7df;color:#775b12;max-height:260px;overflow:auto}.scroll{overflow:auto;max-height:680px;background:#e6ebe7;padding:18px}.excel{border-collapse:collapse;table-layout:fixed;background:white;color:black;box-shadow:0 2px 10px #0001}.excel td{padding:3px 5px;overflow:hidden;min-width:35px}.audit{border-collapse:collapse;width:100%;font-size:13px}.audit th,.audit td{padding:9px;text-align:left;border-bottom:1px solid #e1e8e3}.pill{background:#eef4ee;padding:7px 12px;border-radius:5px}.hidden{display:none!important}a{color:#246b4b}footer{color:#76857c;font-size:12px;text-align:center;padding:16px}@media(max-width:760px){.grid{grid-template-columns:1fr}h1{font-size:24px}.panel{padding:16px}main{padding:18px 12px}}
+</style></head><body>
+<header><small>TIPC 案例 5-1</small><h1>2A01 按月合併報表</h1><p>匯入每月裝卸資料，依輸出樣板彙整。預覽、確認，再下載。</p></header>
+<main><div id="localNotice" class="status hidden">請雙擊同資料夾的「啟動2A01.cmd」，從自動開啟的本機網址使用。此工具需要本機處理程式，以保留 Excel 樣板格式。</div>
+<div class="grid"><section class="panel"><h2><span class="step">01</span>輸入報表</h2><label class="drop" id="inputDrop">拖曳多個 Excel 到此處<br><span class="hint">支援 .xls、.xlsx，每份檔案可含多張工作表</span><input id="inputFiles" type="file" accept=".xls,.xlsx" multiple></label><div id="inputList"></div><p class="hint">每張工作表都可獨立選取月份。隱藏工作表預設不選取。</p></section>
+<section class="panel"><h2><span class="step">02</span>輸出樣板</h2><label class="drop" id="templateDrop">拖曳一個輸出樣板到此處<br><span class="hint">每次以新上傳的樣板為準，不套用固定版型</span><input id="templateFile" type="file" accept=".xls,.xlsx"></label><div id="templateInfo" class="filename">尚未選取樣板</div><p><label>彙整至工作表 <select id="targetSheet" disabled></select></label></p><p class="hint">.xlsx 保留原始字體、底色、合併欄位、列印設定及其他工作表。xls 會轉為 xlsx，轉換後請核對格式。</p></section></div>
+<section class="panel"><h2><span class="step">03</span>核對來源與合併設定</h2><p class="hint">以「貨物群組代碼＋貨物代碼」配對，將輸入「裝噸數＋卸噸數」寫入樣板對應的月份欄。貨物排列與月份位置可調整，表頭名稱需保留。樣板其他區域不變。</p><div id="sheets"><p class="hint">上傳輸入檔後，在此選取工作表。</p></div><p><label><input id="allowDuplicate" type="checkbox"> 允許同月份多張工作表加總（僅適用分批資料，重複月報會重複計算）</label></p><div class="toolbar"><button class="primary" id="mergeButton" disabled>產生合併預覽</button><button id="clearButton">清除並重新開始</button><span id="count" class="hint">尚未上傳</span></div><div id="status" role="status" aria-live="polite"></div></section>
+<section id="resultPanel" class="panel hidden"><div class="toolbar"><h2 style="margin-right:auto"><span class="step">04</span>報表預覽</h2><label>縮放 <select id="zoom"><option value=".65">65%</option><option value=".85">85%</option><option value="1" selected>100%</option><option value="1.25">125%</option></select></label></div><p id="summary"></p><div id="warnings" class="status warn hidden"></div><details><summary>查看來源與噸數核對</summary><div id="audit"></div></details><p class="hint">網頁預覽呈現儲存格字體、底色、框線、欄寬及合併欄位；Excel 列印分頁、主題字型、圖形與條件格式請以下載檔在 Excel 中確認。未匯入月份留白，已匯入月份未出現的貨物填 0。樣板月份明細區原有數值會被取代。</p><div class="scroll"><div id="preview"></div></div><p><label><input id="confirmed" type="checkbox"> 我已確認表格、來源月份與警示，下載此版本</label></p><button class="primary" id="download" disabled>下載合併報表 .xlsx</button></section>
+</main><footer>資料僅於本機處理，無雲端上傳。關閉啟動視窗即停止服務。</footer>
 <script>
-(() => {
-  const $=s=>document.querySelector(s), templateInput=$('#templateInput'), inputFiles=$('#inputFiles');
-  let template=null, inputs=[], merged=null;
-  const norm=v=>String(v??'').replace(/[\s\u3000]/g,'').trim();
-  const code=v=>String(v??'').trim();
-  const cell=(ws,r,c)=>ws[XLSX.utils.encode_cell({r,c})]?.v;
-  const nameOf=f=>f.name.replace(/\.[^.]+$/,'');
-  function renderFiles(){
-    if(!merged) $('#result').style.display='none';
-    $('#templateList').innerHTML=template?`<li><span>${esc(template.name)}</span><button data-clear-template title="移除">×</button></li>`:'';
-    $('#inputList').innerHTML=inputs.map((f,i)=>`<li><span>${esc(f.name)}</span><button data-remove="${i}" title="移除">×</button></li>`).join('');
-    $('#clearInputs').disabled=!inputs.length;
-    $('#mergeBtn').disabled=!(template&&inputs.length);
-    $('#status').textContent=template&&inputs.length?`已選取 1 個樣板、${inputs.length} 個輸入檔。`:'請先選取輸出樣板與至少一個輸入檔。'; $('#status').className='status';
-    const atStep=merged?3:template?2:1;
-    [['#templateCard',1],['#inputCard',2],['#result',3]].forEach(([id,n])=>{const el=$(id);el.classList.toggle('is-active',atStep===n);el.classList.toggle('is-done',atStep>n)});
-    [['#chip1',1],['#chip2',2],['#chip3',3]].forEach(([id,n])=>{const el=$(id);el.classList.toggle('active',atStep===n);el.classList.toggle('done',atStep>n)});
-    $('#line1').classList.toggle('done',atStep>1);$('#line2').classList.toggle('done',atStep>2);
-  }
-  const esc=s=>String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
-  function attachDrop(el, fn){['dragenter','dragover'].forEach(e=>el.addEventListener(e,x=>{x.preventDefault();el.classList.add('over')}));['dragleave','drop'].forEach(e=>el.addEventListener(e,x=>{x.preventDefault();el.classList.remove('over')}));el.addEventListener('drop',e=>fn([...e.dataTransfer.files]));}
-  attachDrop($('#templateDrop'),fs=>{if(fs[0]){template=fs[0];merged=null;renderFiles()}}); attachDrop($('#inputDrop'),fs=>{inputs.push(...fs.filter(valid));merged=null;renderFiles()});
-  templateInput.onchange=e=>{if(e.target.files[0]){template=e.target.files[0];merged=null;renderFiles()}}; inputFiles.onchange=e=>{inputs.push(...[...e.target.files].filter(valid));merged=null;renderFiles();e.target.value=''};
-  document.addEventListener('click',e=>{if(e.target.dataset.clearTemplate!==undefined){template=null;merged=null;renderFiles()}if(e.target.dataset.remove!==undefined){inputs.splice(+e.target.dataset.remove,1);merged=null;renderFiles()}});
-  $('#clearInputs').onclick=()=>{inputs=[];merged=null;$('#result').style.display='none';renderFiles()};
-  function valid(f){return /\.xlsx?$/i.test(f.name)}
-  async function read(file){return XLSX.read(await file.arrayBuffer(),{type:'array',cellStyles:true,cellNF:true,cellDates:true});}
-  function findHeader(ws, expected){
-    const range=XLSX.utils.decode_range(ws['!ref']||'A1:A1');
-    for(let r=range.s.r;r<=Math.min(range.e.r,40);r++) for(let c=range.s.c;c<=range.e.c;c++) if(norm(cell(ws,r,c))===norm(expected)) return {r,c};
-    return null;
-  }
-  function monthFrom(...texts){const s=texts.join(' ');let m=s.match(/(?:115|\d{3,4})\s*(?:年|[-/]?)\s*(0?[1-9]|1[0-2])\s*月?/);if(!m)m=s.match(/(?:^|\D)(0?[1-9]|1[0-2])月/);return m?+m[1]:null}
-  function detectTemplate(ws){
-    const cargo=findHeader(ws,'貨物代碼'); if(!cargo) throw Error('樣板找不到「貨物代碼」欄位。');
-    const cargoName=findHeader(ws,'貨物名稱');
-    const range=XLSX.utils.decode_range(ws['!ref']||'A1:A1'), months=[];
-    for(let r=range.s.r;r<=cargo.r;r++) for(let c=range.s.c;c<=range.e.c;c++){const m=monthFrom(String(cell(ws,r,c)||''));if(m&&!months.some(x=>x.m===m))months.push({m,c})}
-    if(!months.length) throw Error('樣板找不到「1月」至「12月」的月份欄位。');
-    const rows=[]; for(let r=cargo.r+1;r<=range.e.r;r++){const k=code(cell(ws,r,cargo.c));if(k) rows.push({r,code:k,label:cell(ws,r,cargoName?cargoName.c:Math.max(0,cargo.c-1))||''});}
-    return {cargo,months:months.sort((a,b)=>a.m-b.m),rows};
-  }
-  function readInputSheet(ws, sheetName, fileName){
-    const cargo=findHeader(ws,'貨物代碼'), total=findHeader(ws,'裝卸噸數合計'); if(!cargo||!total) return {skip:true,reason:`${fileName}／${sheetName}：缺少「貨物代碼」或「裝卸噸數合計」欄位`};
-    const range=XLSX.utils.decode_range(ws['!ref']||'A1:A1'); let title=''; for(let r=range.s.r;r<=Math.min(cargo.r,10);r++)for(let c=range.s.c;c<=range.e.c;c++)title+=' '+(cell(ws,r,c)||'');
-    const month=monthFrom(sheetName,title,fileName); if(!month) return {skip:true,reason:`${fileName}／${sheetName}：無法辨識月份（請在工作表名稱或標題中加入「115年01月」格式）`};
-    const values=[]; for(let r=Math.max(cargo.r,total.r)+1;r<=range.e.r;r++){const k=code(cell(ws,r,cargo.c));const raw=cell(ws,r,total.c);if(!k||raw===undefined||raw===null||raw==='')continue;const n=typeof raw==='number'?raw:Number(String(raw).replace(/,/g,''));if(Number.isFinite(n))values.push({code:k,value:n});}
-    return {month,values,name:`${fileName}／${sheetName}`};
-  }
-  $('#mergeBtn').onclick=async()=>{try{
-    $('#mergeBtn').disabled=true; $('#status').textContent='正在讀取與核對報表…'; $('#status').className='status';
-    const templateBook=await read(template), templateSheet=templateBook.Sheets[templateBook.SheetNames[0]], layout=detectTemplate(templateSheet), sums=new Map(), issues=[], sources=[];
-    for(const f of inputs){const wb=await read(f); for(const sn of wb.SheetNames){const res=readInputSheet(wb.Sheets[sn],sn,f.name);if(res.skip){issues.push(res.reason);continue}sources.push(res.name);for(const item of res.values){const key=`${res.month}|${item.code}`;sums.set(key,(sums.get(key)||0)+item.value)}}}
-    const templateCodes=new Set(layout.rows.map(x=>x.code)); for(const key of sums.keys()){const [,k]=key.split('|');if(!templateCodes.has(k))issues.push(`輸入資料的貨物代碼 ${k} 未出現在輸出樣板，未寫入。`)}
-    merged={templateBook,layout,sums,issues}; renderPreview(); $('#result').style.display='block'; renderFiles(); $('#status').textContent='合併完成，請核對下方預覽。';$('#status').className='status ok';
-  }catch(err){$('#status').textContent=`無法產生預覽：${err.message}`;$('#status').className='status error';console.error(err)}finally{$('#mergeBtn').disabled=!(template&&inputs.length)}};
-  function renderPreview(){
-    const {layout,sums,issues}=merged, months=layout.months; let html=`<thead><tr><th>貨物代碼</th><th>貨物名稱</th>${months.map(x=>`<th>${x.m}月</th>`).join('')}</tr></thead><tbody>`;
-    for(const row of layout.rows)html+=`<tr><td>${esc(row.code)}</td><td>${esc(row.label)}</td>${months.map(x=>`<td>${fmt(sums.get(`${x.m}|${row.code}`)||0)}</td>`).join('')}</tr>`;
-    $('#preview').innerHTML=html+'</tbody>'; $('#summary').innerHTML=`<span class="pill">辨識 ${layout.rows.length} 個樣板品項</span><span class="pill">彙整 ${sums.size} 組月份／品項數值</span>${issues.length?`<span class="pill warn">${issues.length} 項提醒</span>`:''}`;
-    $('#issues').className=issues.length?'issue':'';$('#issues').innerHTML=issues.length?`<b>請留意：</b><ul>${issues.slice(0,30).map(x=>`<li>${esc(x)}</li>`).join('')}</ul>${issues.length>30?'<div>其餘提醒已省略。</div>':''}`:'';
-  }
-  const fmt=n=>new Intl.NumberFormat('zh-TW',{maximumFractionDigits:8}).format(n);
-  $('#downloadBtn').onclick=async()=>{try{ $('#downloadBtn').disabled=true; $('#downloadBtn').textContent='正在建立檔案…'; const blob=await makeOutput(); const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`${nameOf(template)}_已合併.xlsx`;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1500)}catch(e){alert('下載檔建立失敗：'+e.message);console.error(e)}finally{$('#downloadBtn').disabled=false;$('#downloadBtn').textContent='下載合併後報表'}};
-  async function makeOutput(){
-    // xlsx：直接修補原始 XML，其他所有樣板內容與 Excel 設定皆不會重新建立。
-    if(/\.xlsx$/i.test(template.name)) return patchXlsx(template,merged);
-    // xls 沒有可在瀏覽器中無損修改的開放 XML 結構；以讀入的樣式工作簿輸出 xlsx。
-    const wb=merged.templateBook, ws=wb.Sheets[wb.SheetNames[0]]; for(const row of merged.layout.rows)for(const mo of merged.layout.months){const addr=XLSX.utils.encode_cell({r:row.r,c:mo.c});ws[addr]={...(ws[addr]||{}),t:'n',v:merged.sums.get(`${mo.m}|${row.code}`)||0};} return new Blob([XLSX.write(wb,{bookType:'xlsx',type:'array',cellStyles:true})],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
-  }
-  async function patchXlsx(file,data){
-    const zip=await JSZip.loadAsync(await file.arrayBuffer()), workbook=parseXml(await zip.file('xl/workbook.xml').async('text')),
-      rels=parseXml(await zip.file('xl/_rels/workbook.xml.rels').async('text')), ns='http://schemas.openxmlformats.org/officeDocument/2006/relationships';
-    const relId=workbook.getElementsByTagNameNS('http://schemas.openxmlformats.org/spreadsheetml/2006/main','sheet')[0].getAttributeNS(ns,'id');
-    const rel=[...rels.documentElement.children].find(x=>x.getAttribute('Id')===relId); let path=rel.getAttribute('Target').replace(/^\//,''); if(!path.startsWith('xl/'))path='xl/'+path.replace(/^\.\.\//,'');
-    const xml=parseXml(await zip.file(path).async('text')), sheetData=xml.getElementsByTagNameNS('http://schemas.openxmlformats.org/spreadsheetml/2006/main','sheetData')[0];
-    for(const row of data.layout.rows)for(const mo of data.layout.months) setNumber(xml,sheetData,XLSX.utils.encode_cell({r:row.r,c:mo.c}),data.sums.get(`${mo.m}|${row.code}`)||0);
-    zip.file(path,new XMLSerializer().serializeToString(xml)); return zip.generateAsync({type:'blob',compression:'DEFLATE'});
-  }
-  function parseXml(text){return new DOMParser().parseFromString(text,'application/xml')}
-  function setNumber(doc,sheetData,ref,value){const ns='http://schemas.openxmlformats.org/spreadsheetml/2006/main';let node=[...doc.getElementsByTagNameNS(ns,'c')].find(c=>c.getAttribute('r')===ref);if(!node){node=doc.createElementNS(ns,'c');node.setAttribute('r',ref);const {r}=XLSX.utils.decode_cell(ref);let row=[...sheetData.children].find(x=>+x.getAttribute('r')===r+1);if(!row){row=doc.createElementNS(ns,'row');row.setAttribute('r',r+1);sheetData.appendChild(row)}row.appendChild(node)}node.removeAttribute('t');node.querySelectorAll('f,is').forEach(n=>n.remove());let v=node.getElementsByTagNameNS(ns,'v')[0];if(!v){v=doc.createElementNS(ns,'v');node.appendChild(v)}v.textContent=String(value);}
-})();
-</script>
-</body>
-</html>
+const TOKEN='__TOKEN__';const $=id=>document.getElementById(id);let inputs=[],template=null,result=null,busy=false;
+function escapeHTML(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+async function api(path,data){const r=await fetch(path,{method:'POST',headers:{'Content-Type':'application/json','X-TIPC-Token':TOKEN},body:JSON.stringify(data)});let j=await r.json();if(!r.ok)throw Error(j.error);return j;}
+function status(text,error=false){$('status').className='status'+(error?' error':'');$('status').textContent=text;}
+function invalidate(){result=null;$('resultPanel').classList.add('hidden');$('confirmed').checked=false;$('download').disabled=true;}
+function ready(){ $('mergeButton').disabled=busy||!template||!inputs.length; $('inputFiles').disabled=busy;$('templateFile').disabled=busy;$('clearButton').disabled=busy; }
+function render(){ $('inputList').innerHTML=inputs.map(f=>`<div class="filename">${escapeHTML(f.name)} <span class="hint">${f.sheets.length} 張工作表</span> <button data-remove="${f.id}">移除</button></div>`).join('');$('sheets').innerHTML=inputs.map(f=>f.sheets.map((s,i)=>`<div class="sheetrow" data-id="${f.id}" data-sheet="${escapeHTML(s.name)}"><label><input class="pick" type="checkbox" ${s.hidden?'':'checked'}> ${escapeHTML(f.name)} ／ ${escapeHTML(s.name)}${s.hidden?'（隱藏）':''}</label><small>年度</small><input class="year" type="number" min="1" max="9999" value="${s.year||''}" aria-label="年度"><small>月份</small><select class="month" aria-label="月份"><option value="">請選擇</option>${Array.from({length:12},(_,i)=>`<option value="${i+1}" ${s.month===i+1?'selected':''}>${i+1}月</option>`).join('')}</select></div>`).join('')).join('');$('count').textContent=`${inputs.length} 份輸入檔，${inputs.reduce((n,f)=>n+f.sheets.length,0)} 張工作表`;ready();}
+async function upload(file){if(!/\.(xls|xlsx)$/i.test(file.name))throw Error('僅支援 .xls 與 .xlsx');if(file.size>40*1024*1024)throw Error('單檔上限 40 MB');const b64=await new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(reader.result.split(',')[1]);reader.onerror=reject;reader.readAsDataURL(file);});return api('/upload',{name:file.name,data:b64});}
+async function load(files,isTemplate){if(busy)return;invalidate();busy=true;ready();try{if(isTemplate&&files.length!==1)throw Error('輸出樣板請一次上傳一份。');for(const f of files){status('正在讀取 '+f.name+' …');const item=await upload(f);if(isTemplate){template=item;$('templateInfo').textContent=item.name+(item.converted?'（xls 已轉換，請核對格式）':'');$('targetSheet').innerHTML=item.sheets.map(s=>`<option>${escapeHTML(s.name)}</option>`).join('');$('targetSheet').disabled=false;}else inputs.push(item);}render();status('讀取完成，請確認工作表、年度及月份。');}catch(e){status(e.message,true);}finally{busy=false;ready();}}
+for(const [drop,input,isTemplate] of [['inputDrop','inputFiles',false],['templateDrop','templateFile',true]]){ $(input).onchange=e=>load([...e.target.files],isTemplate);const el=$(drop);el.ondragover=e=>{e.preventDefault();el.classList.add('drag');};el.ondragleave=()=>el.classList.remove('drag');el.ondrop=e=>{e.preventDefault();el.classList.remove('drag');load([...e.dataTransfer.files],isTemplate);};}
+$('inputList').onclick=e=>{const id=e.target.dataset.remove;if(id&&!busy){inputs=inputs.filter(f=>f.id!==id);invalidate();render();}};
+$('sheets').onchange=invalidate;$('targetSheet').onchange=invalidate;$('allowDuplicate').onchange=invalidate;
+$('clearButton').onclick=()=>{inputs=[];template=null;invalidate();$('inputFiles').value='';$('templateFile').value='';$('templateInfo').textContent='尚未選取樣板';$('targetSheet').innerHTML='';$('targetSheet').disabled=true;$('status').textContent='';render();};
+$('mergeButton').onclick=async()=>{invalidate();busy=true;ready();try{const selected=[...document.querySelectorAll('.sheetrow')].filter(el=>el.querySelector('.pick').checked).map(el=>({id:el.dataset.id,sheet:el.dataset.sheet,year:el.querySelector('.year').value,month:el.querySelector('.month').value}));if(!selected.length)throw Error('請至少勾選一張工作表。');if(selected.some(s=>!s.year||!s.month))throw Error('請為選取的工作表填入年度及月份。');status('正在彙整數值並保留樣板格式 …');const r=await api('/merge',{template:template.id,sheet:$('targetSheet').value,inputs:selected,allowDuplicate:$('allowDuplicate').checked});result=r;$('preview').innerHTML=r.html;$('warnings').textContent=r.warnings.join('\n');$('warnings').classList.toggle('hidden',!r.warnings.length);$('summary').textContent=`已合併 ${r.audit.length} 張工作表，月份：${r.months.join('、')} 月。${r.missing.length?'尚未匯入：'+r.missing.join('、')+' 月。':''}`;$('audit').innerHTML='<table class="audit"><tr><th>輸入檔／工作表</th><th>月份</th><th>筆數</th><th>來源總噸數</th></tr>'+r.audit.map(a=>`<tr><td>${escapeHTML(a.file)}／${escapeHTML(a.sheet)}</td><td>${a.month}</td><td>${a.rows}</td><td>${a.total.toLocaleString('zh-TW',{maximumFractionDigits:4})}</td></tr>`).join('')+'</table>';$('resultPanel').classList.remove('hidden');status('合併完成。請在下方確認預覽與警示後下載。');$('resultPanel').scrollIntoView({behavior:'smooth'});}catch(e){status(e.message,true);}finally{busy=false;ready();}};
+$('zoom').onchange=()=>{$('preview').style.zoom=$('zoom').value;};$('confirmed').onchange=()=>{$('download').disabled=!$('confirmed').checked||!result;};
+$('download').onclick=async()=>{if(!result||!$('confirmed').checked)return;try{const r=await fetch('/download/'+TOKEN+'/'+result.result);if(!r.ok)throw Error('此結果已過期，請重新產生預覽。');const u=URL.createObjectURL(await r.blob());const a=document.createElement('a');a.href=u;a.download='2A01_按月合併報表.xlsx';a.click();setTimeout(()=>URL.revokeObjectURL(u),10000);}catch(e){status(e.message,true);}};
+if(location.protocol==='file:'){$('localNotice').classList.remove('hidden');$('inputFiles').disabled=true;$('templateFile').disabled=true;}
+</script></body></html>

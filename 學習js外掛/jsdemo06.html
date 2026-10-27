@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>GSAP｜學習 JS 外掛</title><link rel="stylesheet" href="style.css"></head><body><main><a href="js.html">← 回到外掛總覽</a><p class="eyebrow">DEMO 06 / 網頁動畫</p><h1>GSAP</h1><p class="intro">用程式控制物件移動、轉動和透明度。像按鈕特效、首頁進場動畫。</p><span class="tag">gsap.to()、gsap.set()</span><section class="panel"><h2>動手試試</h2><p>按播放看方塊移動；把 duration 改成 3，動畫會變慢。</p><p id="error" class="error" role="alert" hidden></p><div class="track"><div id="box" class="box">JS</div></div><button id="play">播放動畫</button></section><section class="panel"><h2>讀懂這個範例</h2><p>先用 HTML 放好畫面，再載入外掛的 CSS（若有）與 JavaScript，最後執行下面的初始化程式。把這個 HTML 檔複製一份，改設定練習。</p><h3>① 引入外掛</h3><pre><code>&lt;script src=&quot;https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/gsap.min.js&quot;&gt;&lt;/script&gt;</code></pre><h3>② 準備畫面</h3><pre><code>&lt;div class=&quot;track&quot;&gt;&lt;div id=&quot;box&quot; class=&quot;box&quot;&gt;JS&lt;/div&gt;&lt;/div&gt;&lt;button id=&quot;play&quot;&gt;播放動畫&lt;/button&gt;</code></pre><h3>③ 啟動功能</h3><pre><code id="source">document.querySelector('#play').onclick = () =&gt; {
+  gsap.killTweensOf('#box'); // 連點時先停止上一段動畫。
+  gsap.set('#box',{x:0,rotation:0});
+  const distance = document.querySelector('.track').clientWidth - 72;
+  gsap.to('#box', {x:distance,rotation:360,duration:1.5,ease:'power2.inOut'});
+};</code></pre><a href="https://gsap.com/docs/v3/GSAP/gsap.to()/" target="_blank" rel="noopener">閱讀 GSAP 官方文件 ↗</a><p class="note">範例固定版本，方便重複練習；官方文件可能已更新。若改用新版，請對照該版本 API。資料僅在瀏覽器示範。</p></section><nav><a href="jsdemo05.html">← 上一個範例</a><a href="js.html">回總覽</a><a href="jsdemo07.html">下一個範例 →</a></nav><footer>學習 JS 外掛 · 需要網路載入 CDN</footer></main><script>
+function showError(message){const el=document.querySelector('#error');el.hidden=false;el.textContent=message;}
+window.addEventListener('error',event=>{if(event.target.tagName==='SCRIPT'||event.target.tagName==='LINK')showError('外掛資源載入失敗，請確認網路連線後重新整理。');else if(event.message)showError('執行遇到問題：'+event.message);},true);
+</script><script src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/gsap.min.js"></script><script>
+try {
+document.querySelector('#play').onclick = () => {
+  gsap.killTweensOf('#box'); // 連點時先停止上一段動畫。
+  gsap.set('#box',{x:0,rotation:0});
+  const distance = document.querySelector('.track').clientWidth - 72;
+  gsap.to('#box', {x:distance,rotation:360,duration:1.5,ease:'power2.inOut'});
+};
+} catch(error) { showError('範例無法啟動。請檢查網路與瀏覽器支援：'+error.message); }
+</script></body></html>
